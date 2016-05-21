@@ -1,0 +1,5 @@
+from twython import Twython
+
+twitter = Twython('app key goes here',' app secret goes here ', ' oauth token here ', 'oauth secret here')
+
+twitter.update_status(status = 'Updating with Python and Twython')

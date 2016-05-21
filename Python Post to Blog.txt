@@ -1,0 +1,55 @@
+
+import sys
+from oauth2client import file, client, tools
+from httplib2 import Http
+from googleapiclient import sample_tools
+from sys import argv
+from apiclient.discovery import build
+import time
+
+
+
+def bloggerAPI(message):
+
+
+# Authenticate and construct service.
+#CLIENT_SECRET_FILE = 'client_secrets.json'
+#APPLICATION_NAME = 'rayblog1-1307'
+
+    service, flags = sample_tools.init(argv, 'blogger', 'v3', __doc__, __file__ ,scope='https://www.googleapis.com/auth/blogger')
+
+
+    #getting the date time
+    now = time.strftime("%c")
+        
+    
+    try:
+
+      #note variable 'message' is passed
+      posts = service.posts()
+      body = {
+        "kind": "blogger#post",
+        "id": "2713720453989971623",
+        "title": now,
+        "content":"<div> " + message + "</div>",
+        }
+      insert = posts.insert(blogId='2713720453989971623', body=body)
+      posts_doc = insert.execute()
+
+      print('rayspython.blogspot.co.uk')
+
+
+    except client.AccessTokenRefreshError:
+      print('The credentials have been revoked or expired, please re-run'
+      'the application to re-authorize')
+
+
+    return main()
+
+def main():
+    print('Insert Message')
+    message = input()
+    bloggerAPI(message)
+
+main()
+

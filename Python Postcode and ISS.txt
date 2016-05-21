@@ -1,0 +1,93 @@
+import requests
+import re
+import time, datetime
+
+
+##### This does the postcode to lat long conversions
+def getLatLngAPI(inpPC):
+
+
+    # create teh string and get the URL
+    response = requests.get("http://uk-postcodes.com/postcode/" + inpPC + ".json")
+
+  
+    #get the lat
+    latfilter = re.compile(r'lat":...........')
+    latfilterFind = latfilter.findall(response.text)
+
+    latfilterFindstrip = ' '.join(latfilterFind).replace('lat":','')
+
+    #get the long
+    lngfilter = re.compile(r'lng":...........')
+    lngfilterFind = lngfilter.findall(response.text)
+
+    lngfilterFindstrip = ' '.join(lngfilterFind).replace('lng":','')
+
+    #makt it a list
+    lllist = [latfilterFindstrip,lngfilterFindstrip]
+
+       
+    return lllist
+
+
+#####this gets the ISS times
+def getISSAPI(lllist):
+
+
+    response = requests.get("http://api.open-notify.org/iss-now.json")
+
+    #params is the API keyword
+    parameters = {"lat": float(lllist[0]), "lon": float(lllist[1])}
+
+    response = requests.get("http://api.open-notify.org/iss-pass.json", params = parameters)
+
+    #reg ex to get the date times
+    filter = re.compile(r' \d\d\d\d\d\d\d\d\d\d' )
+    filterFind = filter.findall(response.text)
+
+    #remove the first time as it is the search time
+    filterFind.pop(0)
+
+    print("the next times teh ISS is overhead are: ")
+    print()
+
+    count = 0 
+    for r in filterFind:
+        t = datetime.datetime.fromtimestamp(float(filterFind[count]))
+        count += 1
+        #convert to string for stripping
+        str_t = str(t)
+        #strips off the yyyy-mm-dd
+        print(str_t[10:])
+
+    return()
+
+
+##### this gets the astronaughts :-)
+def getAstroAPI():
+
+
+    response = requests.get("http://api.open-notify.org/astros.json")
+    
+    filter = re.compile(r'"name":...*')
+    filterFind = filter.findall(response.text)
+    filterFindstrip = ' '.join(filterFind).replace('"name":','').replace('"','')
+
+    print()
+    print("And the astronaughts waving to you are " + filterFindstrip)
+  
+      
+    return()
+
+########### MAIN PROG ##########
+def main():
+
+    print("input the postcode ")
+    inpPC = input()
+    #this calls the function and
+    #initialises lllist
+    lllist = getLatLngAPI(inpPC)
+    getISSAPI(lllist)
+    getAstroAPI()
+
+main()
