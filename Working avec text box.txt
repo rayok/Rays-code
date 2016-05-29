@@ -1,0 +1,63 @@
+#opens a text file so you can read
+#the contents
+
+from tkinter import *
+from tkinter.filedialog import askopenfilename
+from tkinter.messagebox import showerror
+
+
+
+class MyFrame(Frame):
+    def __init__(self):
+        Frame.__init__(self)
+        self.master.title(" Text File Reader")
+        self.master.rowconfigure(10, weight=1)
+        self.master.columnconfigure(10, weight=1)
+        self.grid(sticky=W+E+N+S)
+        self.master.minsize(width=400, height=400)
+        #self.master.maxsize(width=666, height=666)
+
+        self.button = Button(self, text="Browse for the file", command=self.load_file, width=30)
+        self.button.grid(row=1, column=0, sticky=W)
+
+
+
+    def load_file(self):
+
+        # create a variable to put the file contents in
+        f = StringVar()
+      
+
+             
+        
+	#file loaded into fname
+        fname = askopenfilename(filetypes=(("All files", "*.*"),
+                                           ("Text Files", "*.txt"),
+                                           ("MSG", "*.msg") ))
+                        
+              
+        if fname:
+            try:  
+
+                #get the contents of the text file                
+                v = open(fname, "r")
+                f = (v.read())
+
+                #create the text box 
+                root = Tk()
+                text = Text(root)
+                text.insert(INSERT, f)
+                text.pack()
+        
+        
+            
+                
+            except:                    
+                showerror("Open Source File", "Failed to read file\n'%s'" % fname)
+        return
+
+            
+                
+
+if __name__ == "__main__":
+    MyFrame().mainloop()
