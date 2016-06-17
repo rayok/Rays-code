@@ -1,0 +1,62 @@
+import socket   #for sockets
+import time
+
+
+
+def getstatus(in_address, lo_port, hi_port): 
+ 
+    print('Connection Attempt')
+
+    #get the mame resolved
+    host = in_address
+     
+    try:
+        remote_ip = socket.gethostbyname( host )
+        print('Connected to ' + host + ' on ip ' + remote_ip)
+    except socket.gaierror:
+        #could not resolve
+        print('Hostname could not be resolved. Exiting')
+        print("-------------")
+        main()
+
+
+    #empty list to store results as you cannot create incremental
+    #variable names in the for loop
+    results = [0 for i in range(int(hi_port))]
+
+    #Connect to remote server, each port in turn
+    #New connection has to be established for each port test
+    for num in range(int(lo_port), int(hi_port)):
+        #create teh connection
+        results[num] =  socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        results[num].settimeout(1)
+
+        #try the port for this iteration
+        try:
+            results[num].connect((remote_ip, num))
+            print(str(num) + ': Connected')
+            results[num].close()
+            time.sleep(1)
+        
+        except socket.timeout:
+            print(str(num) + ': NOT Connected')
+            results[num].close()
+            time.sleep(1)
+                               
+
+     #go back to main
+    return main()
+
+###main prog###
+def main():
+    print()
+    print("Input address")
+    in_address = input()
+    print('Input low port')
+    lo_port = input()
+    print('Input high port')
+    hi_port = input()
+    getstatus(in_address, lo_port, hi_port)
+
+#call main
+main()
