@@ -1,0 +1,49 @@
+import os, sys
+import time
+import random
+from mutagen.mp3 import MP3
+
+
+
+def playmusak(path): 
+
+   # Open a file
+   dirs = os.listdir(path)
+
+   print("Number of files = " + str(len(dirs)))
+
+   # pick a track
+   pick = int(random.random()* len(dirs))
+   print("A random pick is ...")
+   print(dirs[pick])
+
+
+   # stringify the track name
+   # and play it
+   track = str(path)+ dirs[pick]
+   os.startfile(track)
+
+
+   # print the track length
+   print("The track length in seconds is ... ")
+   getlength = MP3(track)
+   print(int(getlength.info.length))
+
+   # sleep for the duration
+   time.sleep(int(getlength.info.length)-3)
+   
+   	# awake and recycle
+   print("Sleep endeth")
+   playmusak(path)
+
+
+##main prog###
+
+def main():
+    print()
+    print("Path is D:/test input new if needed ...")
+    path = input() or "d:/test/"
+    playmusak(path)
+
+#call main
+main()
