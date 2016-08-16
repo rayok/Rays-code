@@ -1,0 +1,79 @@
+#  file read using inner and outer function
+
+
+from tkinter import *
+from tkinter.filedialog import askopenfilename
+from tkinter.messagebox import showerror
+
+
+
+class MyFrame(Frame):
+    #  This sets up the GUI
+    def __init__(self):
+        Frame.__init__(self)
+        self.master.title(" Text File Reader")
+        self.master.rowconfigure(10, weight=1)
+        self.master.columnconfigure(10, weight=1)
+        self.grid(sticky=W+E+N+S)
+        self.master.minsize(width=400, height=400)
+        #self.master.maxsize(width=666, height=666)
+
+        self.button1 = Button(self, text="Browse for the file", command=self.load_file, width=30)
+        self.button1.grid(row=1, column=0, sticky=W)
+
+        self.button2 = Button(self, text="Another function", command=self.other_func, width=30)
+        self.button2.grid(row=2, column=0, sticky=W)
+
+
+    #  this is the outer function
+    def load_file(self):
+
+        # declaring f to be passed to inner function
+        f = StringVar()   
+        
+	#file loaded into fname
+        fname = askopenfilename(filetypes=(("All files", "*.*"),
+                                           ("Text Files", "*.txt"),
+                                           ("MSG", "*.msg") ))
+                        
+        #  inner function handling the file reading 
+        def show_file(fname, f) :
+            # create a variable to put the file contents in
+            if fname:
+                try:  
+
+                    #get the contents of the text file  
+                    #rb = read bytes, r = ascii read              
+                    v = open(fname, "rb")
+                    f = (v.read())               
+                    
+                except:                    
+                    showerror("Open Source File", "Failed to read file\n'%s'" % fname)
+                    
+            #  return the file contents
+            return f
+
+        #  calling the inner function and passing values
+        f1 = show_file(fname, f)
+
+        #  create the text box
+        root = Tk()
+        text = Text(root)
+        text.insert(INSERT, f1)
+        text.pack(expand='yes')
+
+
+
+    # code for the other button 
+    def other_func(self):
+
+        #http://www.tutorialspoint.com/python/tk_messagebox.htm
+        #http://stackoverflow.com/questions/24405738/tkinter-showinfo-python-3
+        #showinfo is not directly imported via the header
+        messagebox.showinfo("Say Hello", "Hello World")
+        return
+
+                
+
+if __name__ == "__main__":
+    MyFrame().mainloop()
